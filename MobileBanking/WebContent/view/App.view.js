@@ -14,75 +14,45 @@ sap.ui.jsview("view.App", {
 	*/ 
 	createContent : function(oController) {
 
-	    var oPage = new sap.m.Page({
-	        title: "Page",
-	        enableScrolling: false,
-	        subHeader: new sap.m.Bar({
-	          contentMiddle : [
-	            new sap.m.Button({
-	              text: "Default",
-	              press: fnPress
-	            }),
-	            new sap.m.Button({
-	              type: "Reject",
-	              text: "Reject",
-	              press: fnPress
-	            }),
-	            new sap.m.Button({
-	              icon: "sap-icon://action",
-	              press: fnPress
-	            })
-	          ]
-	        }),
-	        content: [
-	          new sap.m.HBox({
-	            items: [
-	              new sap.m.Button({
-	                text: "Default",
-	                press: fnPress,
-	                layoutData: new sap.m.FlexItemData({growFactor: 1})
-	              }),
-	              new sap.m.Button({
-	                text: "Accept",
-	                type: sap.m.ButtonType.Accept,
-	                press: fnPress,
-	                layoutData: new sap.m.FlexItemData({growFactor: 1})
-	              }),
-	              new sap.m.Button({
-	                text: "Reject",
-	                type: sap.m.ButtonType.Reject,
-	                press: fnPress,
-	                layoutData: new sap.m.FlexItemData({growFactor: 1})
-	              })
-	            ]
-	          }),
-	          util.UiFactory.createDescription(this.getId())
-	        ],
-	        headerContent: [
-	          new sap.m.Button({
-	            icon: "sap-icon://action",
-	            press: fnPress
-	          })
-	        ],
-	        footer: new sap.m.Bar({
-	          contentMiddle: [
-	            new sap.m.Button({
-	              text: "Default",
-	              press: fnPress
-	            }),
-	            new sap.m.Button({
-	              text: "Emphasized",
-	              type: sap.m.ButtonType.Emphasized,
-	              press: fnPress
-	            }),
-	            new sap.m.Button({
-	              icon: "sap-icon://action",
-	              press: fnPress
-	            })
-	          ]
-	        })
-	      }).addStyleClass("marginBoxContent");
-	    
-	    return oPage;
+		// to avoid scroll bars on desktop the root view must be set to block display
+		this.setDisplayBlock(true);
+		 
+		//var page = sap.ui.view({id:"Main", viewName:"view.Main", type:sap.ui.core.mvc.ViewType.JS});
+		//var	app = new sap.m.App({initialPage:"Main"});
+		//page.getController().nav = this.getController();
+		//app.addPage(page);
+		
+		var oSplitApp = new sap.m.SplitApp("mySplitApp", {});
+		
+		this.app = oSplitApp;
+		
+		var mainMaster = sap.ui.view({id:"MainMaster", viewName:"view.MainMaster", type:sap.ui.core.mvc.ViewType.JS});
+		mainMaster.getController().nav = this.getController();
+		
+		var homeMaster = sap.ui.view({id:"HomeMaster", viewName:"view.HomeMaster", type:sap.ui.core.mvc.ViewType.JS});
+		homeMaster.getController().nav = this.getController();
+		
+		var messagesPage = sap.ui.view({id:"Messages", viewName:"view.Messages", type:sap.ui.core.mvc.ViewType.JS});
+		messagesPage.getController().nav = this.getController();
+		
+		var approvalsPage = sap.ui.view({id:"Approvals", viewName:"view.Approvals", type:sap.ui.core.mvc.ViewType.JS});
+		approvalsPage.getController().nav = this.getController();
+		
+		var homeDetailPage = sap.ui.view({id:"HomeDetail", viewName:"view.HomeDetail", type:sap.ui.core.mvc.ViewType.JS});
+		homeDetailPage.getController().nav = this.getController();
+		
+		var loginPage = sap.ui.view({id:"Login", viewName:"view.Login", type:sap.ui.core.mvc.ViewType.JS});
+		loginPage.getController().nav = this.getController();
+		
+		//add the master pages to the splitapp control
+		oSplitApp.addMasterPage(homeMaster).addMasterPage(mainMaster);
+
+		//add the detail pages to the splitapp control
+		oSplitApp.addDetailPage(messagesPage).addDetailPage(approvalsPage).addDetailPage(loginPage).addDetailPage(homeDetailPage);
+		
+		oSplitApp.setInitialDetail("Login");
+		oSplitApp.setInitialMaster("MainMaster");
+		
+ 		return oSplitApp;
 	}
 });
