@@ -165,11 +165,11 @@ MBBranchLocator.findBranchesByLocation = function () {
 /*
  * Connector base class
  */
-
+//DONE
 function MBConnector() {
 
 }
-
+//DONE
 MBConnector.sendSOAPMessage = function(endpoint, action, soapmessage, successcallback, errorcallback) {
 	lastInactiveTime = 0;
     showPleaseWait();
@@ -194,7 +194,7 @@ MBConnector.sendSOAPMessage = function(endpoint, action, soapmessage, successcal
 /*
  * SecurityConnector base class
  */
-
+//DONE
 function MBSecurityConnector() {
 
 }

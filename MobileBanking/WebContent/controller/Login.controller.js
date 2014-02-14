@@ -1,4 +1,5 @@
 jQuery.sap.require("model.SapBeans");
+jQuery.sap.require("util.mbanking");
 
 sap.ui.controller("controller.Login", {
 
@@ -46,6 +47,9 @@ sap.ui.controller("controller.Login", {
 
         
         sap.ui.getCore().byId("Loginpage").addContent(new sap.m.Label({text : user.getXML()}));
+        
+       
+        
         
         var bus = sap.ui.getCore().getEventBus();
         bus.publish("nav", "to", { 
