@@ -1,101 +1,139 @@
 sap.ui.controller("controller.App", {
+    onInit : function() {
+        // init history mgmt
+        jQuery.sap.require("jquery.sap.history");
+        var historyDefaultHandler = function(navType) {
+            if(navType === jQuery.sap.history.NavType.Back){
+                this.navBack("Login");
+            }else{
+                this.navTo("Login", null, false);
+            }
+        };
+        
+        var historyPageHandler = function(params, navType){
+            if(!params || !params.id){
+                jQuery.sap.log.error("invalid parameter: " + params);
+            }else{
+                if(navType === jQuery.sap.history.NavType.Back){
+                    this.navBack(params.id);
+                }else{
+                    this.navTo(params.id, params.data, false);
+                }
+            }
+        };
+        
+        jQuery.sap.history({
+            routes: [{ 
+                // This handler is executed when you navigate back to the history state on the path "page"
+                path : "page", handler: jQuery.proxy(historyPageHandler, this) 
+            }],
+            // The default handler is executed when you navigate back to the history state with an empty hash
+            defaultHandler: jQuery.proxy(historyDefaultHandler, this)
+        });
+        
+        // subscribe to event bus
+        var bus = sap.ui.getCore().getEventBus();
+        bus.subscribe("nav", "to", this.navHandler, this);
+        bus.subscribe("nav", "back", this.navHandler, this);
+        bus.subscribe("nav", "virtual", this.navHandler, this);
+    }, 
 
-loadPage: function(pageId) {
-		
-		var app = this.getView().app;
-		
-		// load page on demand. Assumes Master pages have the "Master" as substring
-		var master = (pageId.indexOf("Master") != -1);
-		if (app.getPage(pageId, master) === null) {
-			var page = sap.ui.view({
-				id : pageId,
-				viewName : "view." + pageId,
-				type : "JS"
-			});
-			page.getController().nav = this;
-			app.addPage(page, master);
-			jQuery.sap.log.info("app controller > loaded page: " + pageId);
-		}
-	},
-	//assumes app is SplitApp
-	to : function(pageId, oData, withBindings, isMaster) {
-		//assumes app is SplitApp
-		var app = this.getView().app;
-		
-		// load page on demand
-		this.loadPage(pageId);
-		
-		// set data context on the page if available
-		if(oData) {
-			if (withBindings) {
-				var page = app.getPage(pageId);
-				page.setBindingContext(oData);
-				// show the page with context binded
-				if(isMaster) app.toMaster(pageId);
-				else app.toDetail(pageId);
-			} else {
-				// show the page with data available on "beforeShow" event on the target page
-				if(isMaster) app.toMaster(pageId,oData);
-				else app.toMaster(pageId, oData);
-			}
-		} else {
-			if(isMaster) app.toMaster(pageId);
-			else app.toDetail(pageId);
-		}
-		
-	},
-	
-	
-	toMaster : function(pageId, oData, withBindings) {
-		this.to(pageId, oData, withBindings, true);
-	},
-	
-	/**
-	 * Navigates to another page
-	 * @param {string} pageId The id of the next page
-	 * @param {sap.ui.model.Context} context The data context to be applied to the next page (optional)
-	 */
-	toDetail : function (pageId, oData, withBindings) {
-		this.to(pageId, oData, withBindings, false);
-	},
-	
-	/**
-	 * Navigates back to a previous page
-	 * @param {string} pageId The id of the next page
-	 */
-	back : function (pageId, oBackData) {
-		this.getView().app.backToPage(pageId, oBackData);
-	},
-	
-	backMaster : function(oBackData) {
-		this.getView().app.backMaster(oBackData);
-	},
-	
-	backDetail : function(oBackData) { 
-		this.getView().app.backDetail(oBackData);
-	},
-	
-	QueryString : function () {
-		  // This function is anonymous, is executed immediately and 
-		  // the return value is assigned to QueryString!
-		  var query_string = {};
-		  var query = window.location.search.substring(1);
-		  var vars = query.split("&");
-		  for (var i=0;i<vars.length;i++) {
-		    var pair = vars[i].split("=");
-		    	// If first entry with this name
-		    if (typeof query_string[pair[0]] === "undefined") {
-		      query_string[pair[0]] = pair[1];
-		    	// If second entry with this name
-		    } else if (typeof query_string[pair[0]] === "string") {
-		      var arr = [ query_string[pair[0]], pair[1] ];
-		      query_string[pair[0]] = arr;
-		    	// If third or later entry with this name
-		    } else {
-		      query_string[pair[0]].push(pair[1]);
-		    }
-		  } 
-		    return query_string;
-		}
+    navHandler: function(channelId, eventId, data) {
+        if(eventId === "to"){
+            if (!data.id) {
+                jQuery.sap.log.error("'nav to' event cannot be processed. data.id must be given");
+            }
+            this.navTo(data.id, data.data, true);
+        }else if(eventId === "back"){
+            if(!data.step){
+                data.step = 1;
+            }
+            if(data.home){
+                jQuery.sap.history.backToHash("");
+            }else if(data.step > 0){
+                jQuery.sap.history.back(data.step);
+            }else{
+                jQuery.sap.log.error("'nav back' event cannot be processed. At least one from [data.step, data.home] must be given with valid value");
+            }
+        }else if(eventId === "virtual"){
+            jQuery.sap.history.addVirtualHistory();
+        }else{
+            jQuery.sap.log.error("'nav' event cannot be processed. There's no handler registered for event with id: " + eventId);
+        }
+    },
+    
+    navTo : function(id, data, writeHistory) {
+        
+        if (id === undefined){
+            
+            // invalid id
+            jQuery.sap.log.error("navTo failed due to missing id");
+        
+        } else {
+            
+            // Closing popovers needs to be done in navTo and navBack
+            if(sap.m.InstanceManager.hasOpenPopover()){
+                sap.m.InstanceManager.closeAllPopovers();
+                jQuery.sap.log.info("navTo - closed popover(s)");
+            }
+            
+            // load view on demand
+            var app = this.getView().app;
+            if (app.getPage(id) === null) {
+                var type = "JS";
+                var page = sap.ui.view({
+                    id : id,
+                    viewName : "view." + id,
+                    type : type
+                });
+                app.addPage(page);
+                jQuery.sap.log.info("app controller > loaded page: " + id);
+            }
+            
+            // navigate in the app control
+            var transition = ("Update" === id) ? "show" : "slide";
+            app.to(id, transition, data);
+            
+            // write browser history
+            if (writeHistory === undefined || writeHistory) {
+                var bookmarkable = false;
+                var stateData = { id: id };
+                jQuery.sap.history.addHistory("page", stateData, bookmarkable);
+            }
+            
+            // log
+            jQuery.sap.log.info("navTo - to page: " + id);
+        }
+    },
+    
+    navBack : function (id) {
+        
+        if (!id) {
+            // invalid parameter
+            jQuery.sap.log.error("navBack - parameters id must be given");
+        
+        } else {
+            
+            // close open dialogs 
+            if (sap.m.InstanceManager.hasOpenDialog()) {
+                sap.m.InstanceManager.closeAllDialogs();
+                jQuery.sap.log.info("navBack - closed dialog(s)");
+            }
+            
+            // close open popovers
+            if (sap.m.InstanceManager.hasOpenPopover()) {
+                sap.m.InstanceManager.closeAllPopovers();
+                jQuery.sap.log.info("navBack - closed popover(s)");
+            }
+            
+            // ... and navigate back
+            var app = this.getView().app;
+            var currentId = (app.getCurrentPage()) ? app.getCurrentPage().getId() : null;
+            if (currentId !== id) {
+                app.backToPage(id);
+                jQuery.sap.log.info("navBack - back to page: " + id);
+            }
+        }
+    } 
 
 });

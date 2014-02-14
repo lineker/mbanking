@@ -7,6 +7,6 @@ sap.ui.app.Application.extend("Application", {
 	},
 	main : function() {
 		var root = this.getRoot();
-		sap.ui.jsview("app", "view.App").placeAt(root);
+		sap.ui.jsview("App", "view.App").placeAt(root);
 	}
 });

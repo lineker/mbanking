@@ -1,27 +1,28 @@
-sap.ui.jsview("view.App", {
+sap.ui.jsview("view.LoginPwd", {
 
 	/** Specifies the Controller belonging to this View. 
 	* In the case that it is not implemented, or that "null" is returned, this View does not have a Controller.
-	* @memberOf mobilebanking.App
+	* @memberOf view.Login
 	*/ 
 	getControllerName : function() {
-		return "controller.App";
+		return "controller.LoginPwd";
 	},
 
 	/** Is initially called once after the Controller has been instantiated. It is the place where the UI is constructed. 
 	* Since the Controller is given to this method, its event handlers can be attached right away. 
-	* @memberOf mobilebanking.App
+	* @memberOf view.Login
 	*/ 
 	createContent : function(oController) {
-
-		// to avoid scroll bars on desktop the root view must be set to block display
-		this.setDisplayBlock(true);
-		this.app = new sap.m.App();
-        
-		this.app.addPage(new sap.ui.jsview("Login", "view.Login"));
-        //this.app.addPage(new sap.ui.jsview("LoginPwd", "view.LoginPwd"));
-        
-        return this.app; 
 		
+ 		return new sap.m.Page({
+ 		    id : "LoginPwds",
+			title: "Password",
+            showNavButton: true,                // page 2 should display a back button
+            navButtonPress: [ oController.navButtonPress, oController ],
+			content: [
+			  
+			]
+		});
 	}
+
 });

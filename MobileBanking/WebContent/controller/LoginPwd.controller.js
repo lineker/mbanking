@@ -1,6 +1,6 @@
 jQuery.sap.require("model.SapBeans");
 
-sap.ui.controller("controller.Login", {
+sap.ui.controller("controller.LoginPwd", {
 
 /**
 * Called when a controller is instantiated and its View controls (if available) are already created.
@@ -36,24 +36,13 @@ sap.ui.controller("controller.Login", {
 //	onExit: function() {
 //
 //	}  
-    signIn :  function(oEvent) { 
-        var user = new model.SapBeans.MBUser();
-        user.userId = sap.ui.getCore().byId("companyIDInput").getValue();
-        user.backendUserId = sap.ui.getCore().byId("companyIDInput").getValue();
-        user.groupId  = sap.ui.getCore().byId("userIDInput").getValue();
-        user.locale = 'en_US';
-        user.type = 'business';
-
-        
-        sap.ui.getCore().byId("Loginpage").addContent(new sap.m.Label({text : user.getXML()}));
-        
+    signIn :  function() { 
+       
+    },
+    
+    navButtonPress : function(evt) { 
         var bus = sap.ui.getCore().getEventBus();
-        bus.publish("nav", "to", { 
-            id : "LoginPwd"
-        }); 
-        
-        
-        //sap.ui.getCore().byId("App").app.to("LoginPwd", 1);
-        
-    }
+        bus.publish("nav", "back");
+    } 
+
 });
