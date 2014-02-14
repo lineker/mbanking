@@ -1,6 +1,6 @@
 jQuery.sap.require("model.SapBeans");
 jQuery.sap.require("util.mbanking");
-
+jQuery.sap.require("util.sapconnectors.MBSecurityConnector");
 sap.ui.controller("controller.Login", {
 
 /**
@@ -36,7 +36,45 @@ sap.ui.controller("controller.Login", {
 */
 //	onExit: function() {
 //
-//	}  
+//	}
+	
+	processGetMultifactorSecurityInfoResponse : function (response, textStatus, jqXHR) {
+		var xml = jqXHR.responseText;
+		console.log(xml);
+		var xmlDoc = $.parseXML(xml);
+		var $xml = $(xmlDoc);
+		var $challenge = $xml.find("ns0\\:challenge, challenge");
+		//currentSession.question = $challenge.text();
+		console.log( $challenge.text());
+		var mbUser = new MBUser($(xmlDoc));
+		console.log(mbUser);
+		
+		//currentSession.mbUser = mbUser;
+		//localStorage.setItem('pmdata', currentSession.mbUser.extra.extra['enc_pmdata']);
+		//hidePleaseWait();
+
+		//if (currentSession.question) {
+		//	$.mobile.changePage("#loginmfa");
+		//} else if (mbUser.extra.extra['tokensBypassed'] === 'true') {
+			//show error
+		//	errormessage = "Your credentials cannot be verified at this time. Please log into Money Manager GPS or contact Client Services for further instructions.";
+		//	$.mobile.changePage("#messagedialog", {
+		//		role : "dialog",
+		//		reverse : false
+		//	});
+
+		//} else {
+		//	currentSession.imageUrl = mbUser.extra.extra['passmarkImgSrc'];
+		//	currentSession.passphrase = mbUser.extra.extra['secretPhrase'];
+		//	$.mobile.changePage("#loginpwd");
+		//}
+		
+	},
+	
+	processHandleError : function(response) {
+		console.log("error");
+	},
+	
     signIn :  function(oEvent) { 
         var user = new model.SapBeans.MBUser();
         user.userId = sap.ui.getCore().byId("companyIDInput").getValue();
@@ -44,11 +82,12 @@ sap.ui.controller("controller.Login", {
         user.groupId  = sap.ui.getCore().byId("userIDInput").getValue();
         user.locale = 'en_US';
         user.type = 'business';
-
+        
+        //When do we need to use enc_userid, enc_companyid, pmdata, clientid ?
         
         sap.ui.getCore().byId("Loginpage").addContent(new sap.m.Label({text : user.getXML()}));
         
-       
+        util.sapconnectors.MBSecurityConnector.sendGetMultifactorSecurityInfoRequest(user,processGetMultifactorSecurityInfoResponse, processHandleError);
         
         
         var bus = sap.ui.getCore().getEventBus();
