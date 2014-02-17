@@ -92,5 +92,9 @@ sap.ui.controller("controller.LoginSecurityQuestion", {
         user.multifactorInfo[0].enumClass = 'ChallengeQuestion';
         user.multifactorInfo[0].extra.extra['regDevice'] = 'false';
         util.sapconnectors.MBSecurityConnector.answerMultifactorSecurityInfo(user, this.processAnswerMultifactorSecurityInfoResponse, this.processHandleError);
-    }
+    },
+    navButtonPress : function(evt) { 
+        var bus = sap.ui.getCore().getEventBus();
+        bus.publish("nav", "back");
+    } 
 });
