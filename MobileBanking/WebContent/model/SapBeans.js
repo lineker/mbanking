@@ -25,10 +25,10 @@ model.SapBeans = {
 			if (root !== undefined) {
 				var user = this;
 				var $entries = $(root).find("ns1\\:entry, entry");
-				this.extra = new MBExtraMap($entries);
+				this.extra = new model.SapBeans.MBExtraMap($entries);
 				var $multifactor = $(root).find("ns1\\:multifactorSecurityInfo,multifactorSecurityInfo");
 				if ($multifactor !== null && $multifactor !== undefined) {
-					var mfa = new MBMultifactorInfo($multifactor);
+					var mfa = new model.SapBeans.MBMultifactorInfo($multifactor);
 					user.multifactorInfo = [mfa];
 				}
 
@@ -124,6 +124,33 @@ model.SapBeans = {
 				return finalxml;
 			};
 
+		},
+		
+		MBMultifactorInfo : function(root) {
+			this.id = '';
+			this.challenge = '';
+			this.response = '';
+			this.enumClass = '';
+			this.enumValue = '';
+			this.extra = new model.SapBeans.MBExtraMap();
+			if (root !== undefined) {
+				$challenge = $(root).find("ns0\\:challenge,challenge");
+				this.challenge = $challenge.text();
+			}
+
+			this.getXML = function() {
+				var xml = '<ns1:multifactorInfo>';
+				if (this.challenge !== '')
+					xml += '<ns1:challenge>NA</ns1:challenge>';
+				if (this.response !== '')
+					xml += '<ns1:response>' + this.response + '</ns1:response>';
+				if (this.id !== '')
+					xml += '<ns1:id>' + this.id + '</ns1:id>';
+
+				xml += this.extra.getXML();
+				xml += '</ns1:multifactorInfo>';
+				return xml;
+			};
 		}
 		
 		
