@@ -15,6 +15,11 @@ sap.ui.jsview("view.LoginSecurityQuestion", {
 	createContent : function(oController) {
 		
  		return new sap.m.Page({
+ 		    showNavButton: true,
+ 		    navButtonTap: function() {
+                var oEventBus = sap.ui.getCore().getEventBus();
+                oEventBus.publish("nav", "back");
+            },
  		    id : "LoginSecurityQuestionPage",
 			title: "Login",
 			content: [
