@@ -18,28 +18,33 @@ sap.ui.jsview("view.LoginSecurityQuestion", {
  		    id : "LoginSecurityQuestionPage",
 			title: "Login",
 			content: [
-			  new sap.m.Label({
-                  text: 'Please identify yourself'
-              }), 
-              new sap.m.Label({
-                  text: 'Question:'
-              }), 
-              new sap.m.Label({
-                  id : '',
-                  text: '{USER>/securityQuestion}'
-              }), 
-              new sap.m.Label({
-                  text: 'Answer:'
-              }), 
-              new sap.m.Input({
-                  id : 'securityQuestionAnswer',
-                  type: sap.m.InputType.Text,
-                  placeholder: '...'
-              }),
-              new sap.m.Button({
-                  text: "Continue Login",
-                  press: [oController.continueLogin, oController]
-                }),
+			  new sap.m.VBox({
+			      items:  [
+                      new sap.m.Label({
+                          text: 'Please identify yourself'
+                      }), 
+                    
+                      new sap.m.Label({
+                          text: 'Question:'
+                      }), 
+                      new sap.m.Label({
+                          id : '',
+                          text: '{USER>/securityQuestion}'
+                      }), 
+                      new sap.m.Label({
+                          text: 'Answer:'
+                      }), 
+                      new sap.m.Input({
+                          id : 'securityQuestionAnswer',
+                          type: sap.m.InputType.Text,
+                          placeholder: 'Type your answer here...'
+                      }),
+                      new sap.m.Button({
+                          text: "Continue Login",
+                          press: [oController.continueLogin, oController]
+                      })   
+			      ]
+			  })
 			]
 		});
 	}
