@@ -5,9 +5,15 @@ sap.ui.controller("controller.Accounts", {
 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 * @memberOf view.Accounts
 */
-//	onInit: function() {
-//
-//	},
+	onInit: function() {
+	    var view = this.getView();
+	    //Bind the data
+	    //  template ->  view.accountsTemplate
+	    //  list     ->  view.accountsList
+	    // bindPth = "";
+	    // view.accountsList.bindItems(bindPath, this.getView().orderListTemplate);
+
+	},
 
 /**
 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
