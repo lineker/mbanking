@@ -20,7 +20,7 @@ sap.ui.jsview("view.LoginPwd", {
                 var oEventBus = sap.ui.getCore().getEventBus();
                 oEventBus.publish("nav", "back");
             },
- 		    id : "LoginPwdPage",
+ 		    id : "LoginPwdPage", 
             title: "Login",
             content: [
               new sap.m.VBox({

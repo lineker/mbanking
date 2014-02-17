@@ -128,9 +128,11 @@ sap.ui.controller("controller.LoginPwd", {
         sap.ui.getCore().setModel(userModel, "USER");
         
         console.log(mbUser);
-        
-        console.log("done");
 		
+        var bus = sap.ui.getCore().getEventBus();
+        bus.publish("nav", "to", { 
+            id : "Accounts"
+        });
 	},
 	
 	processHandleError : function(response) {
@@ -141,10 +143,10 @@ sap.ui.controller("controller.LoginPwd", {
 	login :  function() { 
     	
     	var mbUser = sap.ui.getCore().getModel("USER").getData();
-    	mbUser.password = $.base64.encode(sap.ui.getCore().byId("password").getValue());
+    	mbUser.password = $.base64.encode(sap.ui.getCore().byId("Password").getValue());
     	var extra = mbUser.extra;
 		extra.extra["token"] = $('#token').val();
-		currentSession.mbUser.extra = extra;
+		mbUser.extra = extra;
 
 		util.sapconnectors.MBSecurityConnector.sendAuthenticateUserRequest(mbUser, this.processAuthenticateUserResponse, this.processHandleError);
     },
