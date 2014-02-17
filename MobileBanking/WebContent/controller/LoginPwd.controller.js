@@ -36,13 +36,7 @@ sap.ui.controller("controller.LoginPwd", {
 //	onExit: function() {
 //
 //	}  
-    signIn :  function() { 
+    login :  function() { 
        
-    },
-    
-    navButtonPress : function(evt) { 
-        var bus = sap.ui.getCore().getEventBus();
-        bus.publish("nav", "back");
-    } 
-
+    }
 });
