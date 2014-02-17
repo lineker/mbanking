@@ -5,7 +5,7 @@ sap.ui.jsview("view.Accounts", {
 	* @memberOf view.Accounts
 	*/ 
 	getControllerName : function() {
-		return "view.Accounts";
+		return "controller.Accounts";
 	},
 
 	/** Is initially called once after the Controller has been instantiated. It is the place where the UI is constructed. 
@@ -13,21 +13,17 @@ sap.ui.jsview("view.Accounts", {
 	* @memberOf view.Accounts
 	*/ 
 	createContent : function(oController) {
+	    this.accountsTemplate = new sap.m.StandardListItem({
+            title: "{nickName}",
+            description: "{balance}"
+          });
+	    
  		return new sap.m.Page({
-			title: "Title",
+			title: "Accounts",
 			content: [
                 new sap.m.List({
-                    id : "accountList",
-                    items: [
-                      new sap.m.StandardListItem({
-                          title: "Item E",
-                          description: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr",
-                          icon: "sap-icon://competitor",
-                          info: "Confirmed",
-                          infoState: sap.ui.core.ValueState.Success
-                        })
-                    ]
-                  })
+                    id : "accountList"
+                })
 
 			]
 		});
