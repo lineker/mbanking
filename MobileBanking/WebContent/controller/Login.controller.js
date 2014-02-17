@@ -42,6 +42,11 @@ sap.ui.controller("controller.Login", {
 		console.log("success");
 		console.log(response);
 		
+		var bus = sap.ui.getCore().getEventBus();
+        bus.publish("nav", "to", { 
+            id : "LoginSecurityQuestion"
+        }); 
+		
 	},
 	
 	processHandleError : function(response) {
@@ -66,12 +71,6 @@ sap.ui.controller("controller.Login", {
         
         sap.ui.getCore().byId("Loginpage").addContent(new sap.m.Label({text : user.getXML()}));
         util.sapconnectors.MBSecurityConnector.sendGetMultifactorSecurityInfoRequest(user, this.processGetMultifactorSecurityInfoResponse, this.processHandleError);
-        
-        
-        var bus = sap.ui.getCore().getEventBus();
-        bus.publish("nav", "to", { 
-            id : "LoginPwd"
-        }); 
         
         
         //sap.ui.getCore().byId("App").app.to("LoginPwd", 1);
