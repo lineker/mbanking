@@ -7,8 +7,7 @@ sap.ui.controller("controller.LoginSecurityQuestion", {
 * Can be used to modify the View before it is displayed, to bind event handlers and do other one-time initialization.
 * @memberOf view.Login
 */
-//	onInit: function() {
-//
+//	onInit: function() { 
 //	},
 
 /**

@@ -52,7 +52,11 @@ sap.ui.controller("controller.Login", {
 		var mbUser = new  model.SapBeans.MBUser($(xmlDoc));
 		console.log(mbUser);
 		console.log(question);
+		mbUser.securityQuestion = question; 
 		
+		var userModel = new sap.ui.model.json.JSONModel(mbUser);  
+        sap.ui.getCore().setModel(userModel, "USER");  
+        
 		//hide loading wheel
 		if(question) {
 			var bus = sap.ui.getCore().getEventBus();
@@ -60,7 +64,6 @@ sap.ui.controller("controller.Login", {
 	            id : "LoginSecurityQuestion"
 	        });
 		}
-		 
 	},
 	
 	processHandleError : function(response) {
@@ -88,11 +91,6 @@ sap.ui.controller("controller.Login", {
         
         //show loading wheel
         
-<<<<<<< HEAD
-=======
-        
-        
->>>>>>> f831e9b75845f36ddd3df989e766f4f21d602286
         //sap.ui.getCore().byId("App").app.to("LoginPwd", 1);
         
     }

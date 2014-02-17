@@ -25,7 +25,8 @@ sap.ui.jsview("view.LoginSecurityQuestion", {
                   text: 'Question:'
               }), 
               new sap.m.Label({
-                  text: 'What is the first name of the maid of honor at your wedding?'
+                  id : '',
+                  text: '{USER>/securityQuestion}'
               }), 
               new sap.m.Label({
                   text: 'Answer:'
@@ -42,5 +43,4 @@ sap.ui.jsview("view.LoginSecurityQuestion", {
 			]
 		});
 	}
-
 });
