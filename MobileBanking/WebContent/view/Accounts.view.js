@@ -18,13 +18,13 @@ sap.ui.jsview("view.Accounts", {
             description: "{balance}"
           });
 	    
+	    this.accountsList = new sap.m.List({
+            id : "accountList"
+        });
  		return new sap.m.Page({
 			title: "Accounts",
 			content: [
-                new sap.m.List({
-                    id : "accountList"
-                })
-
+			    this.accountsList
 			]
 		});
 	}
