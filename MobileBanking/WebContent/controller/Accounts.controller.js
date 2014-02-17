@@ -1,3 +1,6 @@
+jQuery.sap.require("model.SapBeans");
+jQuery.sap.require("util.sapconnectors.MBAccountConnector");
+
 sap.ui.controller("controller.Accounts", {
 
 /**
@@ -6,15 +9,36 @@ sap.ui.controller("controller.Accounts", {
 * @memberOf view.Accounts
 */
 	onInit: function() {
-	    var view = this.getView();
-	    //Bind the data
-	    //  template ->  view.accountsTemplate
-	    //  list     ->  view.accountsList
-	    // bindPth = "";
-	    // view.accountsList.bindItems(bindPath, this.getView().orderListTemplate);
-
+		var user = sap.ui.getCore().getModel("USER").getData();
+		util.sapconnectors.MBAccountConnector.sendGetAccountsRequest(user, this.processGetAccountsResponse, this.processHandleError);
 	},
 
+	processGetAccountsResponse : function(response, textStatus, jqXHR) {
+		
+		var xml = jqXHR.responseText;
+		console.log(xml);
+		var xmlDoc = $.parseXML(xml);
+		var $xml = $(xmlDoc);
+		var $accounts = $xml.find("ns1\\:return,return");
+		var arrayAccounts = new Array();
+		$accounts.each(function() {
+			arrayAccounts.push(new model.SapBeans.MBAccount($(this)));
+		});
+		
+		var accModel = new sap.ui.model.json.JSONModel(arrayAccounts);  
+        sap.ui.getCore().setModel(accModel, "ACCOUNTS");
+        
+        console.log(arrayAccounts);
+        debugger;
+        var view = sap.ui.getCore().byId("Accounts");
+        view.accountsList.bindItems("ACCOUNTS/>/", view.accountsTemplate);
+	},
+	
+	processHandleError : function(response) {
+		console.log("error");
+		console.log(response);
+	},
+	
 /**
 * Similar to onAfterRendering, but this hook is invoked before the controller's View is re-rendered
 * (NOT before the first rendering! onInit() is used for that one!).

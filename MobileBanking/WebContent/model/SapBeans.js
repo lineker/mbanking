@@ -151,6 +151,107 @@ model.SapBeans = {
 				xml += '</ns1:multifactorInfo>';
 				return xml;
 			};
+		},
+		
+		MBAccount : function MBAccount(root) {
+			this.accountId = '';
+			this.fullAccountId = '';
+			this.type = '';
+			this.balance = '';
+			this.currencyCode = '';
+			this.status = '';
+			this.nickName = '';
+			this.supportedOps = null;
+			// MBSupportedOps
+			this.extra = null;
+
+			this.transactions = null;
+			this.moreTransactionsAvail = null;
+			this.availableTransactionDates = null;
+			this.transactionListGrouped = null;
+
+			if (root !== undefined) {
+				this.accountId = $(root).find("ns1\\:accountId,accountId").text();
+				this.fullAccountId = $(root).find("ns1\\:fullAccountId,fullAccountId").text();
+				this.balance = $(root).find("ns1\\:balance,balance").text();
+				this.nickName = $(root).find("ns1\\:nickName,nickName").text();
+
+				$entries = $(root).find("ns1\\:entry,entry");
+				this.extra = new model.SapBeans.MBExtraMap($entries);
+
+				$supOps = $(root).find("ns1\\:supportedOps,supportedOps");
+				this.supportedOps = new model.SapBeans.MBSupportedOps($supOps);
+			}
+
+			this.getXML = function(renamedAs) {
+				if (renamedAs === undefined)
+					renamedAs = 'account';
+				var xml = '<ns1:' + renamedAs + '>';
+				xml += addTags(this, ['accountId', 'fullAccountId', 'type', 'balance', 'currencyCode', 'nickName']);
+				if (this.extra !== null)
+					xml += this.extra.getXML();
+				if (this.supportedOps !== null)
+					xml += this.supportedOps.getXML();
+				xml += '</ns1:' + renamedAs + '>';
+				return xml;
+			};
+
+			this.entitledTo = function(op) {
+				if (this.supportedOps !== null) {
+					for (var i = 0; i < this.supportedOps.length; i++) {
+						if (this.supportedOps[i] === op)
+							return true;
+					}
+				}
+				return false;
+			};
+
+			this.getAccountNameAndNumber = function() {
+				var number = this.accountId.substring(0, this.accountId.indexOf('-'));
+				if (number.length > 4)
+					return this.nickName + ' x' + number.substr(-4);
+				else
+					return this.nickName + ' x' + number;
+			};
+
+			this.getMaskedNumber = function() {
+				var number = this.accountId.substring(0, this.accountId.indexOf('-'));
+				if (number.length > 4)
+					return 'x' + number.substr(-4);
+				else
+					return 'x' + number;
+			};
+
+			this.getAccountNameNumberAndCurrency = function() {
+				var number = this.accountId.substring(0, this.accountId.indexOf('-'));
+				if (number.length > 4)
+					return this.nickName + ' x' + number.substr(-4) + ' (' + this.extra.extra['currency'] + ')';
+				else
+					return this.nickName + ' x' + number;
+			};
+		},
+		
+		 MBSupportedOps : function(root) {
+			this.ops = new Array();
+			if (root !== undefined) {
+				var index = 0;
+				var operations = new Array();
+				$ops = $(root).find("ns1\\:op,op");
+				$ops.each(function() {
+					operations[index] = $(this).text();
+					index++;
+				});
+				this.ops = operations;
+			}
+
+			this.getXML = function() {
+				var xml = '<ns1:supportedOps>';
+				for (var i = 0; i < this.ops.length; i++)
+					xml += '<ns1:op>' + this.ops[i] + '</ns1:op>';
+				xml += '</ns1:supportedOps>';
+				return xml;
+			};
+
 		}
 		
 		

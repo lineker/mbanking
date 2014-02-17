@@ -1,5 +1,5 @@
 jQuery.sap.require("model.SapBeans");
-
+jQuery.sap.require("util.sapconnectors.MBSecurityConnector");
 sap.ui.controller("controller.LoginPwd", {
 
 /**
