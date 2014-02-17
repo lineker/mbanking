@@ -42,11 +42,25 @@ sap.ui.controller("controller.Login", {
 		console.log("success");
 		console.log(response);
 		
-		var bus = sap.ui.getCore().getEventBus();
-        bus.publish("nav", "to", { 
-            id : "LoginSecurityQuestion"
-        }); 
+
+		var xml = jqXHR.responseText;
+		console.log(xml);
+		var xmlDoc = $.parseXML(xml);
+		var $xml = $(xmlDoc);
+		var $challenge = $xml.find("ns0\\:challenge, challenge");
+		var question = $challenge.text();
+		var mbUser = new  model.SapBeans.MBUser($(xmlDoc));
+		console.log(mbUser);
+		console.log(question);
 		
+		//hide loading wheel
+		if(question) {
+			var bus = sap.ui.getCore().getEventBus();
+	        bus.publish("nav", "to", { 
+	            id : "LoginSecurityQuestion"
+	        });
+		}
+		 
 	},
 	
 	processHandleError : function(response) {
@@ -72,7 +86,13 @@ sap.ui.controller("controller.Login", {
         sap.ui.getCore().byId("Loginpage").addContent(new sap.m.Label({text : user.getXML()}));
         util.sapconnectors.MBSecurityConnector.sendGetMultifactorSecurityInfoRequest(user, this.processGetMultifactorSecurityInfoResponse, this.processHandleError);
         
+        //show loading wheel
         
+<<<<<<< HEAD
+=======
+        
+        
+>>>>>>> f831e9b75845f36ddd3df989e766f4f21d602286
         //sap.ui.getCore().byId("App").app.to("LoginPwd", 1);
         
     }
