@@ -8,6 +8,7 @@ util.sapconnectors.MBConnector = {
         //lastInactiveTime = 0;
         //showPleaseWait();
         //log(soapmessage);
+    	console.log(soapmessage);
         $.ajax({
             type : "POST",
             url : util.Constants.servicesUrl + endpoint,
