@@ -29,9 +29,9 @@ sap.ui.controller("controller.Accounts", {
         sap.ui.getCore().setModel(accModel, "ACCOUNTS");
         
         console.log(arrayAccounts);
-        debugger;
         var view = sap.ui.getCore().byId("Accounts");
-        view.accountsList.bindItems("ACCOUNTS/>/", view.accountsTemplate);
+        view.accountsList.setModel( sap.ui.getCore().getModel("ACCOUNTS"));
+        view.accountsList.bindItems("/", view.accountsTemplate);
 	},
 	
 	processHandleError : function(response) {
