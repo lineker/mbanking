@@ -15,13 +15,42 @@ sap.ui.jsview("view.LoginPwd", {
 	createContent : function(oController) {
 		
  		return new sap.m.Page({
- 		    id : "LoginPwds",
-			title: "Password",
-            showNavButton: true,                // page 2 should display a back button
-            navButtonPress: [ oController.navButtonPress, oController ],
-			content: [
-			  
-			]
+ 		   id : "LoginPwdPage",
+           title: "Login",
+           content: [
+             new sap.m.VBox({
+                 items:  [
+                     new sap.m.Image({ 
+                         src : "{USER>/imageUrl}", 
+                         width : "100px",
+                         height : "100px",
+                         layoutData : new sap.m.FlexItemData({growFactor: 1})}
+                     ),
+                     new sap.m.Label({
+                         text: '{USER>/passphrase}'
+                     }), 
+                   
+                     new sap.m.Label({
+                         text: 'Password:'
+                     }), 
+                     new sap.m.Input("Password", {
+                         type: sap.m.InputType.Password,
+                         placeholder: 'Enter Password ...'
+                     }),
+                     new sap.m.Label({
+                         text: 'Token'
+                     }), 
+                     new sap.m.Input("Token", {
+                         type: sap.m.InputType.Password,
+                         placeholder: 'Enter Token ...'
+                     }),
+                     new sap.m.Button({
+                         text: "Login",
+                         press: [oController.login, oController]
+                     })   
+                 ]
+             })
+           ]
 		});
 	}
 

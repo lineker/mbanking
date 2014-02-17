@@ -36,6 +36,7 @@ sap.ui.controller("controller.LoginPwd", {
 //	onExit: function() {
 //
 //	}  
+
 	processAuthenticateUserResponse : function (response, textStatus, jqXHR) {
 		console.log("success");
 		console.log(response);
@@ -137,7 +138,7 @@ sap.ui.controller("controller.LoginPwd", {
 		console.log(response);
 	},
 	
-	signIn :  function() { 
+	login :  function() { 
     	
     	var mbUser = sap.ui.getCore().getModel("USER").getData();
     	mbUser.password = $.base64.encode(sap.ui.getCore().byId("password").getValue());
