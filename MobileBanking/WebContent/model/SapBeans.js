@@ -66,6 +66,64 @@ model.SapBeans = {
 
 				return xml;
 			};
+		},
+		
+		MBExtraMap: function (root) {
+			this.extra = {};
+			var temp = {};
+			if (root !== undefined) {
+				root.each(function() {
+					var value = $(this).text();
+					var mapKey = '';
+					$.each(this.attributes, function() {
+						if ($(this).val() !== "xsd:string") {
+							mapKey = $(this).val();
+						}
+					});
+					temp[mapKey] = value;
+				});
+				this.extra = temp;
+				temp = null;
+			}
+
+			this.getXML = function() {
+				var count = 0;
+				var xml = '';
+				for (var key in this.extra) {
+					if (this.extra.hasOwnProperty(key)) {
+						xml += '<ns1:entry ns1:key="' + key + '">' + this.extra[key] + '</ns1:entry>';
+						count++;
+					}
+				}
+				var finalxml = '';
+				if (count > 0) {
+					finalxml += '<ns1:extraMap size="' + count + '">';
+					finalxml += xml;
+					finalxml += '</ns1:extraMap>';
+				} else
+					finalxml = '<ns1:extraMap size="0"></ns1:extraMap>';
+				return finalxml;
+			};
+
+			this.getXMLEscaped = function() {
+				var count = 0;
+				var xml = '';
+				for (var key in this.extra) {
+					if (this.extra.hasOwnProperty(key)) {
+						xml += '<ns1:entry ns1:key="' + key + '">' + escape(this.extra[key]) + '</ns1:entry>';
+						count++;
+					}
+				}
+				var finalxml = '';
+				if (count > 0) {
+					finalxml += '<ns1:extraMap size="' + count + '">';
+					finalxml += xml;
+					finalxml += '</ns1:extraMap>';
+				} else
+					finalxml = '<ns1:extraMap size="0"></ns1:extraMap>';
+				return finalxml;
+			};
+
 		}
 		
 		
