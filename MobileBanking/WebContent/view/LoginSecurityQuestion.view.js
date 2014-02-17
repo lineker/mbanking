@@ -29,7 +29,7 @@ sap.ui.jsview("view.LoginSecurityQuestion", {
                       }), 
                       new sap.m.Label({
                           id : '',
-                          text: '{USER>/securityQuestion}'
+                          text: '{USER>/multifactorSecurityInfo}'
                       }), 
                       new sap.m.Label({
                           text: 'Answer:'
