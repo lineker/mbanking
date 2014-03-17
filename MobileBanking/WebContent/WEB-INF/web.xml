@@ -80,7 +80,9 @@
 	
 	<context-param>
 		<param-name>com.sap.ui5.proxy.REMOTE_LOCATION</param-name>
-		<param-value>http://208.74.49.253</param-value>
+		<!--  <param-value>http://208.74.49.253</param-value>-->
+		<param-value>http://swat.sybasedemo.com/cb</param-value>
+		<!--  <param-value>http://199.19.211.178/cb</param-value>-->
 	</context-param>
 
 	<!-- ============================================================== -->
